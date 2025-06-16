@@ -5,7 +5,7 @@
   tasks:
     - name: verifier install apache2
       ansible.builtin.stat:
-        path: /var/www/html/index.html
+        path: /etc/apache2/apache2.conf 
       register: apache2_installe
 
     - name: Installer des packages 
@@ -31,4 +31,4 @@
         name: apache2
         state: started
         enabled: yes
-      when: apache2_installe.stat.exists == False
+      when: apache2_installe.stat.exists == True 
