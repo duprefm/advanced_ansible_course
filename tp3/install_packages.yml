@@ -9,7 +9,8 @@
         state: present
       loop:
         - apache2
-      when: inventory_hostname in groups['apache2']
+      when:
+        - inventory_hostname in groups['apache2']
 
     - name: Installer des packages mysql-server
       ansible.builtin.package:
@@ -17,7 +18,8 @@
         state: present
       loop:
         - mysql-server 
-      when: inventory_hostname in groups['mysql']
+      when:
+        - inventory_hostname in groups['mysql']
 
     - name: Installer des packages git
       ansible.builtin.package:
@@ -25,7 +27,8 @@
         state: present
       loop:
         - git 
-      when: inventory_hostname in groups['git']
+      when:
+        - inventory_hostname in groups['git']
 
     - name: Installer des packages nginx
       ansible.builtin.package:
@@ -33,7 +36,8 @@
         state: present
       loop:
         - nginx 
-      when: inventory_hostname in groups['nginx']
+      when:
+        - inventory_hostname in groups['nginx']
 
     - name: Installer des packages cowsay
       ansible.builtin.package:
@@ -41,4 +45,26 @@
         state: present
       loop:
         - cowsay 
-      when: inventory_hostname in groups['cowsay']
+      when:
+        - inventory_hostname in groups['cowsay']
+
+    - name: Installer ufw sur ubuntu
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - ufw
+      when:
+        - ansible_distribution|string == 'Ubuntu'
+
+    - name: Gather the rpm package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Copy index.html if apache2 is installed
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+      when:
+        - "'apache2' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
