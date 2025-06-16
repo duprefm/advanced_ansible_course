@@ -1,0 +1,10 @@
+---
+- name: Installer vim sur tous les serveurs
+  hosts: serveurs
+  become: yes
+  tasks:
+    - name: Installer vim
+      ansible.builtin.package:
+        name: vim
+        state: present
+
