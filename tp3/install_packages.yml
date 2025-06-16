@@ -80,3 +80,19 @@
       when:
         - inventory_hostname in groups['nginx']
         - inventory_hostname in groups['apache2']
+
+    - name: Afficher la date actuelle
+      debug:
+        msg: "Aujourd'hui nous sommes le {{ ansible_date_time.day }}"
+
+    - name: Tâche exécutée les jours pairs
+      ansible.builtin.template:
+        src: jour-pair.j2
+        dest: /etc/jour
+      when: ansible_date_time.day | int % 2 == 0
+
+    - name: Tache exécutée les jours impairs
+      ansible.builtin.template:
+        src: jour-impair.j2
+        dest: /etc/jour
+      when: ansible_date_time.day | int % 2 != 0
