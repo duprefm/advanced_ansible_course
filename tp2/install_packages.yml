@@ -15,7 +15,7 @@
       loop:
         - apache2
         - mysql-server
-      when: not apache2_installe
+      when: apache2_installe.stat.exists == False
 
     - name: Modifier /var/www/html/index.html si apache2 est installé
       ansible.builtin.copy:
@@ -24,11 +24,11 @@
         owner: www-data
         group: www-data
         mode: '0644'
-      when: apache2_installe
+      when: apache2_installe.stat.exists == False 
 
     - name: Star apache2
       ansible.builtin.service:
         name: apache2
         state: started
         enabled: yes
-      when: apache2_installe
+      when: apache2_installe.stat.exists == False
