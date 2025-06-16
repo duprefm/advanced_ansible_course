@@ -5,7 +5,7 @@
   tasks:
     - name: verifier install apache2
       ansible.builtin.stat:
-        path: /etc/apache2/apache2.conf 
+        path: /lib/systemd/system/apache2.service 
       register: apache2_installe
 
     - name: Installer des packages 

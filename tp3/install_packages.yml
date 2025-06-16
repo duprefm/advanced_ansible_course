@@ -1,0 +1,44 @@
+---
+- name: Installer apache2 et mysql-server sur tous les serveurs
+  hosts: all 
+  become: yes
+  tasks:
+    - name: Installer des packages apache2
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+      when: inventory_hostname in groups['apache2']
+
+    - name: Installer des packages mysql-server
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - mysql-server 
+      when: inventory_hostname in groups['mysql']
+
+    - name: Installer des packages git
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git 
+      when: inventory_hostname in groups['git']
+
+    - name: Installer des packages nginx
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx 
+      when: inventory_hostname in groups['nginx']
+
+    - name: Installer des packages cowsay
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - cowsay 
+      when: inventory_hostname in groups['cowsay']
