@@ -96,3 +96,17 @@
         src: jour-impair.j2
         dest: /etc/jour
       when: ansible_date_time.day | int % 2 != 0
+
+    - name: Afficher l'heure actuelle
+      debug:
+        msg: "Heure actuelle: {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}"
+
+    - name: Tâche exécutée après 12h00
+      debug:
+        msg: "Il est après-midi (plus de 12h00)"
+      when: ansible_date_time.hour | int >= 12
+
+    - name: Tâche exécutée avant 12h00
+      debug:
+        msg: "Il est encore le matin (avant 12h00)"
+      when: ansible_date_time.hour | int < 12
