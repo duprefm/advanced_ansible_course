@@ -8,3 +8,7 @@
         name: vim
         state: present
 
+    - name: verifier /etc/passwd
+      ansible.builtin.stat:
+        path: /etc/passwd
+
