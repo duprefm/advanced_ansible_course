@@ -68,3 +68,15 @@
         mode: '0644'
       when:
         - "'apache2' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
+
+    - name: Restart apache2 et nginx
+      ansible.builtin.service:
+        name: "{{ item }}" 
+        state: restarted 
+        enabled: yes
+      loop:
+        - apache2
+        - nginx
+      when:
+        - inventory_hostname in groups['nginx']
+        - inventory_hostname in groups['apache2']
