@@ -21,19 +21,7 @@
     group: www-data
     recurse: true
 
-- name: Create wp-config.php from sample
-  ansible.builtin.copy:
-    src: /var/www/html/wp-config-sample.php
+- name: Depose du fichier wp-config.php
+  ansible.builtin.template:
+    src: wp-config-sample.php
     dest: /var/www/html/wp-config.php
-    remote_src: true
-
-- name: Configure wp-config.php
-  ansible.builtin.lineinfile:
-    path: /var/www/html/wp-config.php
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-  loop:
-    - { regexp: "define\\('DB_NAME',.*", line: "define('DB_NAME', '{{ wordpress_db_name }}');" }
-    - { regexp: "define\\('DB_USER',.*", line: "define('DB_USER', '{{ wordpress_db_user }}');" }
-    - { regexp: "define\\('DB_PASSWORD',.*", line: "define('DB_PASSWORD', '{{ wordpress_db_password }}');" }
-    - { regexp: "define\\('DB_HOST',.*", line: "define('DB_HOST', '{{ wordpress_db_host }}');" }
