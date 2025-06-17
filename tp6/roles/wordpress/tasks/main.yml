@@ -6,17 +6,12 @@
 - name: Extract WordPress
   ansible.builtin.unarchive:
     src: /tmp/wordpress.tar.gz
-    dest: /var/www/html
+    dest: /var/www/html/
     remote_src: true
-
-      #- name: Move WordPress files
-      #ansible.builtin.command: mv /var/www/html/wordpress/* /var/www/html/
-      #args:
-      #creates: /var/www/html/wp-config-sample.php
 
 - name: Set ownership
   ansible.builtin.file:
-    path: /var/www/html
+    path: /var/www/html/
     owner: www-data
     group: www-data
     recurse: true
@@ -24,4 +19,4 @@
 - name: Depose du fichier wp-config.php
   ansible.builtin.template:
     src: wp-config-sample.php.j2
-    dest: /var/www/html/wp-config.php
+    dest: /var/www/html/wordpress/wp-config.php
