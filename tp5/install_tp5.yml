@@ -1,5 +1,6 @@
 ---
 - hosts: all
+    - name: Instal docker
   roles:
     - geerlingguy.docker
 
@@ -18,7 +19,7 @@
         name: "{{ item }}"
         state: present
       loop:
-        - mysql-server 
+        - mysql-server
       when:
         - inventory_hostname in groups['mysql']
 
@@ -27,7 +28,7 @@
         name: "{{ item }}"
         state: present
       loop:
-        - git 
+        - git
       when:
         - inventory_hostname in groups['git']
 
@@ -36,7 +37,7 @@
         name: "{{ item }}"
         state: present
       loop:
-        - nginx 
+        - nginx
       when:
         - inventory_hostname in groups['nginx']
 
@@ -45,7 +46,7 @@
         name: "{{ item }}"
         state: present
       loop:
-        - cowsay 
+        - cowsay
       when:
         - inventory_hostname in groups['cowsay']
 
@@ -72,8 +73,8 @@
 
     - name: Restart apache2 et nginx
       ansible.builtin.service:
-        name: "{{ item }}" 
-        state: restarted 
+        name: "{{ item }}"
+        state: restarted
         enabled: yes
       loop:
         - apache2
