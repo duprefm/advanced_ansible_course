@@ -1,0 +1,26 @@
+---
+- name: Importer CSV depuis une URL
+  hosts: localhost
+  gather_facts: true 
+  vars:
+    csv_url: "https://github.com/MrMegaNova/advanced_ansible_course_16_06/blob/main/tp7/temperature.csv"
+    local_csv_path: "/tmp/temperature.csv"
+    temperatures_list: "{{ lookup('csvfile', '/tmp/temperature.csv delimiter=,') }}"
+    
+  tasks:
+    - name: Télécharger le fichier CSV depuis l'URL
+      ansible.builtin.get_url:
+        url: "{{ csv_url }}"
+        dest: "{{ local_csv_path }}"
+        mode: '0644'
+      register: download_result
+      
+    - name: Confirmer le téléchargement
+      ansible.builtin.debug:
+        msg: "Fichier CSV téléchargé: {{ local_csv_path }}"
+      when: download_result.changed
+
+    - name: Afficher le contenu de la variable temperatures_list
+      ansible.builtin.debug:
+        msg: "À {{ item.time }}, il fait {{ item.temperature }} °C"
+      loop: "{{ temperatures_list }}"

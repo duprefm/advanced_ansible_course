@@ -3,29 +3,11 @@
   hosts: localhost
   gather_facts: true 
   vars:
-    csv_url: "https://github.com/MrMegaNova/advanced_ansible_course_16_06/blob/main/tp7/temperature.csv"
     local_csv_path: "/tmp/temperature.csv"
-    user_list: "{{ lookup('csvfile', '/tmp/temperature.csv filetype=csv delimiter=,') }}"
+    temperatures_list: "{{ lookup('csvfile', \"/tmp/temperature.csv delimiter=,\") }}"
     
   tasks:
-    - name: Télécharger le fichier CSV depuis l'URL
-      ansible.builtin.get_url:
-        url: "{{ csv_url }}"
-        dest: "{{ local_csv_path }}"
-        mode: '0644'
-      register: download_result
-      
-    - name: Confirmer le téléchargement
+    - name: Afficher le contenu de la variable temperatures_list
       ansible.builtin.debug:
-        msg: "Fichier CSV téléchargé: {{ local_csv_path }}"
-      when: download_result.changed
-
-    - name: Read data from CSV file
-      set_fact:
-        lines: "{{ lookup('file', '/tmp/temperature.csv') | community.general.csv_to_dict }}"
-
-    - name: Create users
-      line:
-        time: "{{ item.time }}"
-        temperature: "{{ item.temperature }}"
-      loop: "{{ lines }}"
+        msg: "À {{ item.time }}, il fait {{ item.temperature }} °C"
+      loop: "{{ temperatures_list }}"
