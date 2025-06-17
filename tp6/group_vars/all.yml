@@ -7,3 +7,13 @@ wordpress_db_host: "10.0.0.90"
 
 # MariaDB root (dev only — utiliser vault en prod)
 mysql_root_password: "rootpass"
+mysql_user_home: /root
+mysql_user_name: root
+mysql_user_password: root
+mysql_databases:
+  - name: "wordpress"
+mysql_users:
+  - name: "wpuser"
+    host: "%"
+    password: "wppassword"
+    priv: "wordpress.*:ALL"
