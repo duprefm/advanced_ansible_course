@@ -1,0 +1,113 @@
+---
+- hosts: all
+  roles:
+    - geerlingguy.docker
+
+  tasks:
+    - name: Installer des packages apache2
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+      when:
+        - inventory_hostname in groups['apache2']
+
+    - name: Installer des packages mysql-server
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - mysql-server 
+      when:
+        - inventory_hostname in groups['mysql']
+
+    - name: Installer des packages git
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git 
+      when:
+        - inventory_hostname in groups['git']
+
+    - name: Installer des packages nginx
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nginx 
+      when:
+        - inventory_hostname in groups['nginx']
+
+    - name: Installer des packages cowsay
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - cowsay 
+      when:
+        - inventory_hostname in groups['cowsay']
+
+    - name: Installer ufw sur ubuntu
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - ufw
+      when:
+        - ansible_distribution|string == 'Ubuntu'
+
+    - name: Gather the rpm package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Copy index.html if apache2 is installed
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+        mode: '0644'
+      when:
+        - "'apache2' in ansible_facts.packages or 'nginx' in ansible_facts.packages"
+
+    - name: Restart apache2 et nginx
+      ansible.builtin.service:
+        name: "{{ item }}" 
+        state: restarted 
+        enabled: yes
+      loop:
+        - apache2
+        - nginx
+      when:
+        - inventory_hostname in groups['nginx']
+        - inventory_hostname in groups['apache2']
+
+    - name: Afficher la date actuelle
+      ansible.builtin.debug:
+        msg: "Aujourd'hui nous sommes le {{ ansible_date_time.day }}"
+
+    - name: Tâche exécutée les jours pairs
+      ansible.builtin.template:
+        src: jour-pair.j2
+        dest: /etc/jour
+      when: ansible_date_time.day | int % 2 == 0
+
+    - name: Tache exécutée les jours impairs
+      ansible.builtin.template:
+        src: jour-impair.j2
+        dest: /etc/jour
+      when: ansible_date_time.day | int % 2 != 0
+
+    - name: Afficher l'heure actuelle
+      ansible.builtin.debug:
+        msg: "Heure actuelle: {{ ansible_date_time.hour }}:{{ ansible_date_time.minute }}"
+
+    - name: Tâche exécutée après 12h00
+      ansible.builtin.debug:
+        msg: "Il est après-midi (plus de 12h00)"
+      when: ansible_date_time.hour | int >= 12
+
+    - name: Tâche exécutée avant 12h00
+      ansible.builtin.debug:
+        msg: "Il est encore le matin (avant 12h00)"
+      when: ansible_date_time.hour | int < 12
