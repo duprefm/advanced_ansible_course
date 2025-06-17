@@ -1,9 +1,11 @@
-- hosts: web
-  become: yes
+- name: Install web
+  hosts: web
+  become: true
   roles:
     - geerlingguy.apache
     - wordpress
-- hosts: db
-  become: yes
+- name: Install db
+  hosts: db
+  become: true
   roles:
     - mariadb

@@ -1,12 +1,12 @@
 - name: Apache WordPress
   hosts: web
-  become: yes
+  become: true
   roles:
     - apache
     - wordpress
 
 - name: MariaDB
   hosts: db
-  become: yes
+  become: true
   roles:
     - mariadb
