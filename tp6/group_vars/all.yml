@@ -1,0 +1,9 @@
+# WordPress
+wordpress_version: "6.5.4"
+wordpress_db_name: "wordpress"
+wordpress_db_user: "wpuser"
+wordpress_db_password: "wppassword"
+wordpress_db_host: "10.0.0.90"
+
+# MariaDB root (dev only — utiliser vault en prod)
+mysql_root_password: "rootpass"
