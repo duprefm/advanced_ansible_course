@@ -9,10 +9,10 @@
     dest: /var/www/html
     remote_src: true
 
-- name: Move WordPress files
-  ansible.builtin.command: mv /var/www/html/wordpress/* /var/www/html/
-  args:
-    creates: /var/www/html/wp-config-sample.php
+      #- name: Move WordPress files
+      #ansible.builtin.command: mv /var/www/html/wordpress/* /var/www/html/
+      #args:
+      #creates: /var/www/html/wp-config-sample.php
 
 - name: Set ownership
   ansible.builtin.file:
@@ -23,5 +23,5 @@
 
 - name: Depose du fichier wp-config.php
   ansible.builtin.template:
-    src: wp-config-sample.php
+    src: wp-config-sample.php.j2
     dest: /var/www/html/wp-config.php
