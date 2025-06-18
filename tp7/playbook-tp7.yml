@@ -5,10 +5,10 @@
   vars:
     local_csv_path: "/tmp/temperature.csv"
     temperatures_list: "{{ lookup('csvfile', \"/tmp/temperature.csv delimiter=,\") }}"
-    latitude: 48.8566
-    longitude: 2.3522
+    latitude: 43.604652 
+    longitude: 1.444209 
     api_url: "https://api.open-meteo.com/v1/forecast"
-    timezone: "GMT"
+    timezone: "UTC"
     
   tasks:
     - name: Lire le fichier CSV de températures
@@ -40,26 +40,28 @@
         return_content: yes
       register: meteo_response
 
-    - name: Afficher la reponse API Open-Meteo
-      ansible.builtin.debug:
-        var: meteo_response
-
     - name: Analyser la réponse JSON
       ansible.builtin.set_fact:
         hourly_data: "{{ meteo_response.json.hourly }}"
 
-    - name: Affichier la reponse JSON
-      ansible.builtin.debug:
-        var: hourly_data
+    - name: Analyser la réponse JSON
+      ansible.builtin.set_fact:
+        hourly_data: "{{ meteo_response.json.hourly }}"
 
     - name: Vérifier si l'heure actuelle est présente
       ansible.builtin.set_fact:
         temp_index: "{{ hourly_data.time.index(now_hour) }}"
       when: now_hour in hourly_data.time
 
+    - name: Afficher l’index trouvé
+      debug:
+        var: temp_index
+      when: temp_index is defined
+
     - name: Extraire la température actuelle
       ansible.builtin.set_fact:
-        current_temp: "{{ hourly_data.temperature_2m[temp_index] }}"
+        #current_temp: "{{ hourly_data.temperature_2m[temp_index] }}"
+        current_temp: "{{ hourly_data.temperature_2m[8] }}"
       when: temp_index is defined
 
     - name: Afficher la température actuelle
