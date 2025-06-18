@@ -5,6 +5,10 @@
   vars:
     local_csv_path: "/tmp/temperature.csv"
     temperatures_list: "{{ lookup('csvfile', \"/tmp/temperature.csv delimiter=,\") }}"
+    latitude: 48.8566
+    longitude: 2.3522
+    api_url: "https://api.open-meteo.com/v1/forecast"
+    timezone: "GMT"
     
   tasks:
     - name: Lire le fichier CSV de températures
@@ -21,3 +25,49 @@
       ansible.builtin.debug:
         var: temp_cleaned
 
+    - name: Obtenir l'heure UTC actuelle tronquée à l'heure
+      ansible.builtin.set_fact:
+        now_hour: "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:00') }}"
+
+    - name: Afficher l'heure UTC actuelle tronquée à l'heure
+      ansible.builtin.debug:
+        var: now_hour
+
+    - name: Appeler l'API Open-Meteo
+      ansible.builtin.uri:
+        url: "{{ api_url }}?latitude={{ latitude }}&longitude={{ longitude }}&hourly=temperature_2m&timezone={{ timezone }}"
+        method: GET
+        return_content: yes
+      register: meteo_response
+
+    - name: Afficher la reponse API Open-Meteo
+      ansible.builtin.debug:
+        var: meteo_response
+
+    - name: Analyser la réponse JSON
+      ansible.builtin.set_fact:
+        hourly_data: "{{ meteo_response.json.hourly }}"
+
+    - name: Affichier la reponse JSON
+      ansible.builtin.debug:
+        var: hourly_data
+
+    - name: Vérifier si l'heure actuelle est présente
+      ansible.builtin.set_fact:
+        temp_index: "{{ hourly_data.time.index(now_hour) }}"
+      when: now_hour in hourly_data.time
+
+    - name: Extraire la température actuelle
+      ansible.builtin.set_fact:
+        current_temp: "{{ hourly_data.temperature_2m[temp_index] }}"
+      when: temp_index is defined
+
+    - name: Afficher la température actuelle
+      ansible.builtin.debug:
+        msg: "Température à {{ now_hour }} UTC : {{ current_temp }}°C"
+      when: current_temp is defined
+
+    - name: Message si l'heure n'est pas disponible
+      ansible.builtin.debug:
+        msg: "Aucune donnée pour l'heure actuelle : {{ now_hour }}"
+      when: current_temp is not defined
