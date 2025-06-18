@@ -7,7 +7,17 @@
     temperatures_list: "{{ lookup('csvfile', \"/tmp/temperature.csv delimiter=,\") }}"
     
   tasks:
-    - name: Afficher le contenu de la variable temperatures_list
+    - name: Lire le fichier CSV de températures
+      ansible.builtin.read_csv:
+        path: "{{ local_csv_path }}" 
+        delimiter: ','
+      register: temp_data
+
+    - name: Supprimer les doublons et trier par heure
+      ansible.builtin.set_fact:
+        temp_cleaned: "{{ temp_data.list | unique | sort(attribute='time') }}"
+
+    - name: Afficher les données nettoyées
       ansible.builtin.debug:
-        msg: "À {{ item.time }}, il fait {{ item.temperature }} °C"
-      loop: "{{ temperatures_list }}"
+        var: temp_cleaned
+
