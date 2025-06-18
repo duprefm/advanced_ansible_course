@@ -1,0 +1,10 @@
+---
+roles:
+  - name: geerlingguy.apache
+    version: "4.0.0"
+  - name: geerlingguy.php
+    version: "6.0.0"
+  - name: geerlingguy.mysql
+    version: "5.0.2"
+  - name: community.docker
+    version: ">=3.10.4"
