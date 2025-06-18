@@ -1,0 +1,5 @@
+- name: WordPress
+  hosts: web
+  become: true
+  roles:
+    - test.wordpress
