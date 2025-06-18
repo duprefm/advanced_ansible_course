@@ -35,8 +35,14 @@
 
     - name: Filtrer la ligne de l'heure actuelle
       ansible.builtin.set_fact:
-        #temperature_actuelle: "{{ temp_cleaned.list | selectattr('time', 'equalto', now_hour) | first }}"
-        temperature_actuelle: "{{ temp_cleaned | selectattr('time', 'equalto', now_hour) | first }}"
+        temperature_actuelle: >-
+          {{
+            temp_cleaned |
+            selectattr('time', 'equalto', now_hour) |
+            list |
+            first |
+            default({})
+          }}
 
     - name: Afficher la température actuelle
       ansible.builtin.debug:
