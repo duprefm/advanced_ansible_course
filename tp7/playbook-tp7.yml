@@ -21,9 +21,9 @@
       ansible.builtin.set_fact:
         temp_cleaned: "{{ temp_data.list | unique | sort(attribute='time') }}"
 
-    - name: Afficher les données nettoyées
-      ansible.builtin.debug:
-        var: temp_cleaned
+          #- name: Afficher les données nettoyées
+          #ansible.builtin.debug:
+          #var: temp_cleaned
 
     - name: Obtenir l'heure UTC actuelle tronquée à l'heure
       ansible.builtin.set_fact:
@@ -43,6 +43,10 @@
             first |
             default({})
           }}
+
+    - name: Afficher la ligne de l'heure actuelle
+      ansible.builtin.debug:
+        var: temperature_actuelle
 
     - name: Afficher la température actuelle
       ansible.builtin.debug:
