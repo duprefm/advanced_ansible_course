@@ -54,14 +54,13 @@
       when: now_hour in hourly_data.time
 
     - name: Afficher l’index trouvé
-      debug:
+      ansible.builtin.debug:
         var: temp_index
       when: temp_index is defined
 
     - name: Extraire la température actuelle
       ansible.builtin.set_fact:
-        #current_temp: "{{ hourly_data.temperature_2m[temp_index] }}"
-        current_temp: "{{ hourly_data.temperature_2m[8] }}"
+        current_temp: "{{ hourly_data.temperature_2m[temp_index | int] }}"
       when: temp_index is defined
 
     - name: Afficher la température actuelle
